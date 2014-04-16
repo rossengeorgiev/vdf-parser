@@ -87,11 +87,10 @@ def dump(a, **kwargs):
     return _dump(a,pretty)
 
 def _dump(a,pretty=False,level=0):
-    indent = "\t"
-
     if type(a) is not dict:
         raise ValueError("Expected parametar to be dict")
 
+    indent = "\t"
     buf = ""
     line_indent = ""
 
