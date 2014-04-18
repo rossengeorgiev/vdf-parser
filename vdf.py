@@ -33,7 +33,7 @@ def parse(a):
     skipnext = False
     name = ""
 
-    re_keyvalue = re.compile('^"((?:[^"\\\]|\.)*)"[ \t]+"((?:[^"\\\]|\.)*)"')
+    re_keyvalue = re.compile(r'^"((\\.|[^\"])*)"[ \t]+"((\\.|[^\"])*)"')
 
     for line in lines:
         line = line.strip()

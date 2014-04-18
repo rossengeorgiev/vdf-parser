@@ -18,7 +18,7 @@ var VDF = {
         var skipnext = false;
         var name = "";
 
-        var re_keyvalue = new RegExp('^"((?:[^"\]|\.)*)"[ \t]+"((?:[^"\]|\.)*)"');
+        var re_keyvalue = new RegExp('^"((\\.|[^\"])*)"[ \t]+"((\\.|[^\"])*)');
 
         var i = 0, j = lines.length;
         for(; i < j; i++) {
