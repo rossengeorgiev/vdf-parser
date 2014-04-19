@@ -33,7 +33,7 @@ def parse(a):
     skipnext = False
     name = ""
 
-    re_keyvalue = re.compile(r'^"((\\.|[^\"])*)"[ \t]+"((\\.|[^\"])*)(")?')
+    re_keyvalue = re.compile(r'^"((?:\\.|[^\\"])*)"[ \t]+"((?:\\.|[^\\"])*)(")?')
 
     itr = iter(lines)
 
@@ -62,11 +62,11 @@ def parse(a):
                 # we've matched a simple keyvalue pair, map it to the last dict obj in the stack
                 if m:
                     # if the value is line consume one more line and try to match again, until we get the KeyValue pair
-                    if m.group(5) == None:
-                        line += itr.next()
+                    if m.group(3) == None:
+                        line += "\n" + itr.next()
                         continue
 
-                    stack[-1][m.group(1)] = m.group(3)
+                    stack[-1][m.group(1)] = m.group(2)
 
                 # we have a key with value in parenthesis, so we make a new dict obj (one level deep)
                 else:
