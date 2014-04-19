@@ -8,7 +8,7 @@
 var VDF = {
     parse: function(text) {
         if(typeof text != "string") {
-            throw new Error("Expecting parametar to be a string");
+            throw new TypeError("VDF.parse: Expecting parametar to be a string");
         }
 
         lines = text.split("\n");
@@ -58,12 +58,14 @@ var VDF = {
             }
         }
 
+        if(stack.length != 1) throw new SyntaxError("VDF.parse: open parentheses somewhere");
+
         return obj;
     },
 
     stringify: function(obj,pretty) {
         if( typeof obj != "object") {
-                throw new Error("First input parameter is not an object");
+                throw new TypeError("VDF.stringify: First input parameter is not an object");
         }
 
         pretty = ( typeof pretty == "boolean" && pretty) ? true : false;
@@ -73,7 +75,7 @@ var VDF = {
 
     _dump: function(obj,pretty,level) {
         if( typeof obj != "object" ) {
-            throw new Error("Expected parametar to an object");
+            throw new TypeError("VDF.stringify: a key has value of type other than string or object");
         }
 
         var indent = "\t";

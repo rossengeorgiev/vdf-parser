@@ -26,7 +26,14 @@
                     text = vdf ? JSON.stringify(VDF.parse(text),null,2) : VDF.stringify(JSON.parse(text), true);
                     }
                 catch (err) {
-                    alert("Are you sure the above is JSON?");
+                    console.log(err);
+
+                    if(err.toString().indexOf("VDF") > -1) {
+                        alert("Are you sure the above is VDF?");
+                        }
+                    else {
+                        alert("Are you sure the above is JSON?");
+                        }
                     return;
                     }
 
