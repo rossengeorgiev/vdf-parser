@@ -45,7 +45,7 @@ var VDF = {
 
                 // we've matched a simple keyvalue pair, map it to the last dict obj in the stack
                 if(m) {
-                    stack[stack.length-1][m[1]] = m[2];
+                    stack[stack.length-1][m[1]] = m[3];
                 }
                 // we have a key with value in parenthesis, so we make a new dict obj (one level deep)
                 else {
