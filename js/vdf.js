@@ -18,7 +18,7 @@ var VDF = {
         var skipnext = false;
         var name = "";
 
-        var re_keyvalue = new RegExp('^"((\\.|[^\"])*)"[ \t]+"((\\.|[^\"])*)');
+        var re_keyvalue = new RegExp('^"((?:\\\\.|[^"\\\\])*)"[ \t]+"((?:\\\\.|[^"\\\\])*)(")?','m');
 
         var i = 0, j = lines.length;
         for(; i < j; i++) {
@@ -41,19 +41,29 @@ var VDF = {
 
             // parse keyvalue pairs
             if( line[0] == '"' ) {
-                m = re_keyvalue.exec(line);
+                // nessesary for multiline values
+                while(true) {
+                    m = re_keyvalue.exec(line);
 
-                // we've matched a simple keyvalue pair, map it to the last dict obj in the stack
-                if(m) {
-                    stack[stack.length-1][m[1]] = m[3];
-                }
-                // we have a key with value in parenthesis, so we make a new dict obj (one level deep)
-                else {
-                    key = line.slice(1,line.length-1);
+                    // we've matched a simple keyvalue pair, map it to the last dict obj in the stack
+                    if(m) {
+                        // if don't match a closing quote for value, we consome one more line, until we find it
+                        if(typeof m[3] == "undefined") {
+                            line += "\n" + lines[++i];
+                            continue;
+                        }
 
-                    stack[stack.length-1][key] = {};
-                    stack.push(stack[stack.length-1][key]);
-                    skipnext = true;
+                        stack[stack.length-1][m[1]] = m[2];
+                    }
+                    // we have a key with value in parenthesis, so we make a new dict obj (one level deep)
+                    else {
+                        key = line.slice(1,line.length-1);
+
+                        stack[stack.length-1][key] = {};
+                        stack.push(stack[stack.length-1][key]);
+                        skipnext = true;
+                   }
+                   break;
                }
             }
         }
