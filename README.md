@@ -8,6 +8,10 @@ Finally, the data can be encoded back to vdf.
 
 VDF may contain comments. However, they are not preserved during decoding.
 
+### Online (in your browser)
+
+Go to http://rossengeorgiev.github.io/vdf-parser/
+
 ### Python
 
     import vdf
