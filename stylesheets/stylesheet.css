@@ -64,8 +64,8 @@ a:hover {
 }
 
 header {
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
   background: #2e7bcf url(../images/header-bg.jpg) 0 0 repeat-x;
   border-bottom: solid 1px #275da1;
@@ -101,7 +101,7 @@ header h2 {
 }
 
 #main-content {
-  width: 690px;
+  width: 100%;
   float: left;
 }
 
@@ -137,6 +137,18 @@ a.button {
   padding-left: 68px;
   padding-top: 22px;
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+}
+input {
+  border: 0;
+  padding: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  background: #2e7bcf url(../images/header-bg.jpg) 0 0 repeat-x;
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  line-height: 1.2;
+  font-size: 23px;
+  color: #fff;
+  border-radius: 25px;
 }
 a.button small {
   display: block;
