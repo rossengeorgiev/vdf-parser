@@ -8,6 +8,21 @@
 # use at your own risk
 
 import re
+from codecs import BOM, BOM_BE, BOM_LE, BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE, BOM_UTF32, BOM_UTF32_BE, BOM_UTF32_LE
+
+
+BOMS = [
+    BOM,
+    BOM_BE,
+    BOM_LE,
+    BOM_UTF8,
+    BOM_UTF16,
+    BOM_UTF16_BE,
+    BOM_UTF16_LE,
+    BOM_UTF32,
+    BOM_UTF32_BE,
+    BOM_UTF32_LE,
+]
 
 ###############################################
 #
@@ -28,12 +43,20 @@ def parse(a):
     else:
         raise ValueError("Expected parametar to be file or str")
 
+    # check first line BOM and remove
+    for bom in BOMS:
+        if lines[0][:len(bom)] == bom:
+            lines[0] = lines[0][len(bom):]
+            break;
+
+    # init
     obj = dict()
     stack = [obj]
-    skipnext = False
+    expect_bracket = False
     name = ""
 
     re_keyvalue = re.compile(r'^"((?:\\.|[^\\"])*)"[ \t]+"((?:\\.|[^\\"])*)(")?')
+    re_key = re.compile(r'^"((?:\\.|[^\\"])*)"')
 
     itr = iter(lines)
 
@@ -45,9 +68,12 @@ def parse(a):
             continue
 
         # one level deeper
-        if line[0] == "{" and skipnext is True:
-            skipnext = False
+        if line[0] == "{":
+            expect_bracket = False
             continue
+
+        if expect_bracket:
+            raise SyntaxError("vdf.parse: invalid syntax")
 
         # one level back
         if line[0] == "}":
@@ -70,14 +96,23 @@ def parse(a):
 
                 # we have a key with value in parenthesis, so we make a new dict obj (one level deep)
                 else:
-                    key = line[1:-1]
+                    m = re_key.match(line)
+
+                    if not m:
+                        raise SyntaxError("vdf.parse: invalid syntax")
+
+                    key = m.group(1)
 
                     stack[-1][key] = dict()
                     stack.append(stack[-1][key])
-                    skipnext = True
+                    expect_bracket = True
 
                 # exit the loop
                 break
+
+    if len(stack) != 1:
+        print stack
+        raise SyntaxError("vdf.parse: unclosed parenthasis or quotes")
 
     return obj
 
@@ -125,14 +160,30 @@ def _dump(a,pretty=False,level=0):
 
 def test():
     tests = [
+                # empty test
                 [ '' , {} ],
                 [ {} ,  '' ],
-                [ "//comment text\n//comment", {} ],
+
+                # simple key and values
                 [ {1:1}, '"1" "1"\n'],
                 [ {"a":"1","b":"2"} , '"a" "1"\n"b" "2"\n' ],
-                [ '//comment\n"a" "1"\n"b" "2" //comment' , {"a":"1","b":"2"} ],
+
+                # nesting
                 [ {"a":{"b":{"c":{"d":"1","e":"2"}}}} , '"a"\n{\n"b"\n{\n"c"\n{\n"e" "2"\n"d" "1"\n}\n}\n}\n' ],
-                [ '"a"\n{\n"b"\n{\n"c"\n{\n"e" "2"\n"d" "1"\n}\n}\n}\n' , {"a":{"b":{"c":{"d":"1","e":"2"}}}} ],
+                [ '"a"\n{\n"b"\n{\n"c"\n{\n"e" "2"\n"d" "1"\n}\n}\n}\n"b" "2"' , {"a":{"b":{"c":{"d":"1","e":"2"}}},"b":"2"} ],
+
+                # ignoring comment lines
+                [ "//comment text\n//comment", {} ],
+                [ '"a" "b" //comment text', {"a":"b"} ],
+                [ '//comment\n"a" "1"\n"b" "2" //comment' , {"a":"1","b":"2"} ],
+                [ '"a"\n{//comment\n}//comment' , {"a":{}} ],
+                [ '"a" //comment\n{\n}' , {"a":{}} ],
+
+
+                # new linesi n value
+                [ r'"a" "xx\"xxx"', {"a":r'xx\"xxx'} ],
+                [ '"a" "xx\\"\nxxx"', {"a":'xx\\"\nxxx'} ],
+                [ '"a" "\n\n\n\n"', {"a":'\n\n\n\n'} ]
             ]
 
     for test,expected in tests:

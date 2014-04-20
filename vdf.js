@@ -15,10 +15,11 @@ var VDF = {
 
         var obj = {};
         var stack = [obj];
-        var skipnext = false;
+        var expect_bracket = false;
         var name = "";
 
         var re_keyvalue = new RegExp('^"((?:\\\\.|[^"\\\\])*)"[ \t]+"((?:\\\\.|[^"\\\\])*)(")?','m');
+        var re_key = new RegExp('^"((?:\\\\.|[^\\\\"])*)"')
 
         var i = 0, j = lines.length;
         for(; i < j; i++) {
@@ -28,9 +29,13 @@ var VDF = {
             if( line == "" || line[0] == '/') { continue; }
 
             // one level deeper
-            if( line[0] == "{" && skipnext ) {
-                skipnext = false;
+            if( line[0] == "{" ) {
+                expect_bracket = false;
                 continue;
+            }
+
+            if(expect_bracket) {
+                throw new SyntaxError("VDF.parse: invalid syntax");
             }
 
             // one level back
@@ -57,11 +62,15 @@ var VDF = {
                     }
                     // we have a key with value in parenthesis, so we make a new dict obj (one level deep)
                     else {
-                        key = line.slice(1,line.length-1);
+                        m = re_key.exec(line);
+
+                        if(!m) throw new SyntaxError("VDF.parse: invalid syntax");
+
+                        key = m[1]
 
                         stack[stack.length-1][key] = {};
                         stack.push(stack[stack.length-1][key]);
-                        skipnext = true;
+                        expect_bracket = true;
                    }
                    break;
                }
