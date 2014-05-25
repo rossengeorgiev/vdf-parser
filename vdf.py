@@ -55,7 +55,7 @@ def parse(a):
     expect_bracket = False
     name = ""
 
-    re_keyvalue = re.compile(r'^"((?:\\.|[^\\"])*)"[ \t]+"((?:\\.|[^\\"])*)(")?')
+    re_keyvalue = re.compile(r'^"((?:\\.|[^\\"])*)"[ \t]*"((?:\\.|[^\\"])*)(")?')
     re_key = re.compile(r'^"((?:\\.|[^\\"])*)"')
 
     itr = iter(lines)

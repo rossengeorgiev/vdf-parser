@@ -18,7 +18,7 @@ var VDF = {
         var expect_bracket = false;
         var name = "";
 
-        var re_keyvalue = new RegExp('^"((?:\\\\.|[^"\\\\])*)"[ \t]+"((?:\\\\.|[^"\\\\])*)(")?','m');
+        var re_keyvalue = new RegExp('^"((?:\\\\.|[^"\\\\])*)"[ \t]*"((?:\\\\.|[^"\\\\])*)(")?','m');
         var re_key = new RegExp('^"((?:\\\\.|[^\\\\"])*)"')
 
         var i = 0, j = lines.length;
