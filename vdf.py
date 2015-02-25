@@ -111,7 +111,6 @@ def parse(a):
                 break
 
     if len(stack) != 1:
-        print stack
         raise SyntaxError("vdf.parse: unclosed parenthasis or quotes")
 
     return obj
