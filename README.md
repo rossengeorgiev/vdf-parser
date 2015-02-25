@@ -27,6 +27,15 @@ Go to http://rossengeorgiev.github.io/vdf-parser/
     data = VDF.parse(vdf_text);
     vdf_text = VDF.stringify(data)
 
+### PHP
+
+    require_once('vdf.php');
+
+    $array = vdf_decode($vdf);
+    $vdf = vdf_encode($array);
+    $indented_vdf = vdf_encode($array, true);
+
+
 
 ### License
 
