@@ -13,7 +13,7 @@ function vdf_decode($text) {
     }
 
     // remove that damn BOM
-    $text = preg_replace('/^\x{FEFF}|\x{FFFE}|\x{EEBB}\x{BF}/u', '', $text);
+    $text = preg_replace('/^(\x{FEFF}|\x{FFFE}|\x{EEBB}\x{BF})/u', '', $text);
 
     $lines = preg_split('/\n/', $text);
 
