@@ -14,28 +14,32 @@ Go to http://rossengeorgiev.github.io/vdf-parser/
 
 ### Python
 
-    import vdf
+```python
+import vdf
 
-    f = vdf.parse(open('file.txt'))
-    f = vdf.parse(vdf_text)
+f = vdf.parse(open('file.txt'))
+f = vdf.parse(vdf_text)
 
-    vdf_text = vdf.dump(f)
-    indented_vdf = vdf.dump(f,pretty=True)
+vdf_text = vdf.dump(f)
+indented_vdf = vdf.dump(f,pretty=True)
+```
 
 ### Javascript
 
-    data = VDF.parse(vdf_text);
-    vdf_text = VDF.stringify(data)
+```javascript
+data = VDF.parse(vdf_text);
+vdf_text = VDF.stringify(data)
+```
 
 ### PHP
 
-    require_once('vdf.php');
+```php
+require_once('vdf.php');
 
-    $array = vdf_decode($vdf);
-    $vdf = vdf_encode($array);
-    $indented_vdf = vdf_encode($array, true);
-
-
+$array = vdf_decode($vdf);
+$vdf = vdf_encode($array);
+$indented_vdf = vdf_encode($array, true);
+```
 
 ### License
 
