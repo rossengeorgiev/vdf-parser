@@ -14,15 +14,9 @@ Go to http://rossengeorgiev.github.io/vdf-parser/
 
 ### Python
 
-```python
-import vdf
+Moved to https://github.com/rossengeorgiev/vdf-python
 
-f = vdf.parse(open('file.txt'))
-f = vdf.parse(vdf_text)
-
-vdf_text = vdf.dump(f)
-indented_vdf = vdf.dump(f,pretty=True)
-```
+Install via pypi: `pip install vdf`
 
 ### Javascript
 
