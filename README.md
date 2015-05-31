@@ -1,10 +1,6 @@
-## KeyValue parser for various languages
+## KeyValue encoder/decoder for various languages
 
 Format: https://developer.valvesoftware.com/wiki/KeyValues
-
-Parses vdf text to a language spefic data structure, like an object.
-The data is then available for interaction during runtime.
-Finally, the data can be encoded back to vdf.
 
 VDF may contain comments. However, they are not preserved during decoding.
 
