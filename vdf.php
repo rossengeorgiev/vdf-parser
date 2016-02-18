@@ -3,8 +3,6 @@
 // https://developer.valvesoftware.com/wiki/KeyValues
 //
 // author: Rossen Popov, 2015
-//
-// use at your own risk
 
 function vdf_decode($text) {
     if(!is_string($text)) {
@@ -12,8 +10,14 @@ function vdf_decode($text) {
         return NULL;
     }
 
-    // remove that damn BOM
-    $text = preg_replace('/^(\x{FEFF}|\x{FFFE}|\x{EEBB}\x{BF})/u', '', $text);
+    // detect and convert utf-16, utf-32 and convert to utf8
+    if      (substr($text, 0, 2) == "\xFE\xFF")         $text = mb_convert_encoding($text, 'UTF-8', 'UTF-16BE');
+    else if (substr($text, 0, 2) == "\xFF\xFE")         $text = mb_convert_encoding($text, 'UTF-8', 'UTF-16LE');
+    else if (substr($text, 0, 4) == "\x00\x00\xFE\xFF") $text = mb_convert_encoding($text, 'UTF-8', 'UTF-32BE');
+    else if (substr($text, 0, 4) == "\xFF\xFE\x00\x00") $text = mb_convert_encoding($text, 'UTF-8', 'UTF-32LE');
+
+    // strip BOM
+    $text = preg_replace('/^[\xef\xbb\xbf\xff\xfe\xfe\xff]*/', '', $text);
 
     $lines = preg_split('/\n/', $text);
 
@@ -22,8 +26,11 @@ function vdf_decode($text) {
     $expect_bracket = false;
     $name = "";
 
-    $re_keyvalue = '~^"((?:\\\\.|[^"\\\\])*)"[ \t]*"((?:\\\\.|[^"\\\\])*)(")?~mu';
-    $re_key = '~^"((?:\\\\.|[^\\\\"])*)"~u';
+    $re_keyvalue = '~^("(?P<qkey>(?:\\\\.|[^\\\\"])+)"|(?P<key>[a-z0-9\\-\\_]+))' .
+                   '([ \t]*(' .
+                   '"(?P<qval>(?:\\\\.|[^\\\\"])*)(?P<vq_end>")?' .
+                   '|(?P<val>[a-z0-9\\-\\_]+)' .
+                   '))?~iu';
 
     $j = count($lines);
     for($i = 0; $i < $j; $i++) {
@@ -39,8 +46,8 @@ function vdf_decode($text) {
         }
 
         if($expect_bracket) {
-            trigger_error("vdf_decode: invalid syntax, expected a '}'", E_USER_NOTICE);
-            return NULL;
+            trigger_error("vdf_decode: invalid syntax, expected a '}' on line " . ($i+1), E_USER_NOTICE);
+            return Null;
         }
 
         // one level back
@@ -49,35 +56,37 @@ function vdf_decode($text) {
             continue;
         }
 
-        // parse keyvalue pairs
-        if( $line[0] == '"' ) {
-            // nessesary for multiline values
-            while(true) {
-                // we've matched a simple keyvalue pair, map it to the last dict obj in the stack
-                if(preg_match($re_keyvalue, $line, $m)) {
-                    // if don't match a closing quote for value, we consome one more line, until we find it
-                    if(!isset($m[3])) {
-                        $line .= "\n" . $lines[++$i];
-                        continue;
-                    }
+        // nessesary for multiline values
+        while(True) {
+            preg_match($re_keyvalue, $line, $m);
 
-                    $stack[count($stack)-1][$m[1]] = $m[2];
+            if(!$m) {
+                trigger_error("vdf_decode: invalid syntax on line " . ($i+1), E_USER_NOTICE);
+                return NULL;
+            }
+
+            $key = (isset($m['key']) && $m['key'] !== "")
+                     ? $m['key']
+                     : $m['qkey'];
+            $val = (isset($m['qval']) && (!isset($m['vq_end']) || $m['vq_end'] !== ""))
+                     ? $m['qval']
+                     : (isset($m['val']) ? $m['val'] : False);
+
+            if($val === False) {
+                $stack[count($stack)-1][$key] = array();
+                $stack[count($stack)] = &$stack[count($stack)-1][$key];
+                $expect_bracket = true;
+            }
+            else {
+                // if don't match a closing quote for value, we consome one more line, until we find it
+                if(!isset($m['vq_end']) && isset($m['qval'])) {
+                    $line .= "\n" . $lines[++$i];
+                    continue;
                 }
-                // we have a key with value in parenthesis, so we make a new dict obj (one level deep)
-                else {
-                    if(!preg_match($re_key, $line, $m)) {
-                        trigger_error("vdf_decode: invalid syntax", E_USER_NOTICE);
-                        return NULL;
-                    }
 
-                    $key = $m[1];
-
-                    $stack[count($stack)-1][$key] = array();
-                    $stack[count($stack)] = &$stack[count($stack)-1][$key];
-                    $expect_bracket = true;
-               }
-               break;
-           }
+                $stack[count($stack)-1][$key] = $val;
+            }
+            break;
         }
     }
 
