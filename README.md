@@ -10,7 +10,7 @@ Go to http://rossengeorgiev.github.io/vdf-parser/
 
 ### Python
 
-Moved to https://github.com/rossengeorgiev/vdf-python
+Moved to https://github.com/ValvePython/vdf
 
 Install via pypi: `pip install vdf`
 
