@@ -2,13 +2,11 @@
 // https://developer.valvesoftware.com/wiki/KeyValues
 //
 // author: Rossen Popov, 2014
-//
-// use at your own risk
 
 var VDF = {
     parse: function(text) {
         if(typeof text != "string") {
-            throw new TypeError("VDF.parse: Expecting parametar to be a string");
+            throw new TypeError("VDF.parse: Expecting parameter to be a string");
         }
 
         lines = text.split("\n");
@@ -18,8 +16,13 @@ var VDF = {
         var expect_bracket = false;
         var name = "";
 
-        var re_keyvalue = new RegExp('^"((?:\\\\.|[^"\\\\])*)"[ \t]*"((?:\\\\.|[^"\\\\])*)(")?','m');
-        var re_key = new RegExp('^"((?:\\\\.|[^\\\\"])*)"')
+        var re_kv = new RegExp(
+            '^("((?:\\\\.|[^\\\\"])+)"|([a-z0-9\\-\\_]+))' +
+            '([ \t]*(' +
+            '"((?:\\\\.|[^\\\\"])*)(")?' +
+            '|([a-z0-9\\-\\_]+)' +
+            '))?'
+            );
 
         var i = 0, j = lines.length;
         for(; i < j; i++) {
@@ -35,7 +38,7 @@ var VDF = {
             }
 
             if(expect_bracket) {
-                throw new SyntaxError("VDF.parse: invalid syntax");
+                throw new SyntaxError("VDF.parse: invalid syntax on line " + (i+1));
             }
 
             // one level back
@@ -45,35 +48,36 @@ var VDF = {
             }
 
             // parse keyvalue pairs
-            if( line[0] == '"' ) {
-                // nessesary for multiline values
-                while(true) {
-                    m = re_keyvalue.exec(line);
+            while(true) {
+                m = re_kv.exec(line);
 
-                    // we've matched a simple keyvalue pair, map it to the last dict obj in the stack
-                    if(m) {
-                        // if don't match a closing quote for value, we consome one more line, until we find it
-                        if(typeof m[3] == "undefined") {
-                            line += "\n" + lines[++i];
-                            continue;
-                        }
+                if(m === null) {
+                    throw new SyntaxError("VDF.parse: invalid syntax on line " + (i+1));
+                }
 
-                        stack[stack.length-1][m[1]] = m[2];
+                // qkey = 2
+                // key = 3
+                // qval = 6
+                // vq_end = 7
+                // val = 8
+                var key = (m[2] !== undefined) ? m[2] : m[3];
+                var val = (m[6] !== undefined) ? m[6] : m[8];
+
+                if(val === undefined) {
+                    stack[stack.length-1][key] = {};
+                    stack.push(stack[stack.length-1][key]);
+                    expect_bracket = true;
+                }
+                else {
+                    if(m[7] === undefined && m[8] === undefined) {
+                        line += "\n" + lines[++i];
+                        continue;
                     }
-                    // we have a key with value in parenthesis, so we make a new dict obj (one level deep)
-                    else {
-                        m = re_key.exec(line);
 
-                        if(!m) throw new SyntaxError("VDF.parse: invalid syntax");
+                    stack[stack.length-1][key] = val;
+                }
 
-                        key = m[1]
-
-                        stack[stack.length-1][key] = {};
-                        stack.push(stack[stack.length-1][key]);
-                        expect_bracket = true;
-                   }
-                   break;
-               }
+                break;
             }
         }
 
