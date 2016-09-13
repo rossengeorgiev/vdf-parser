@@ -1,0 +1,25 @@
+{
+	"name": "rossengeorgiev/vdf-parser",
+	"description": "KeyValue encoder/decoder for various languages",
+	"homepage": "https://github.com/rossengeorgiev/vdf-parser",
+	"minimum-stability": "stable",
+	"license": "MIT",
+	"authors":
+	[
+		{
+			"name": "Rossen Georgiev",
+			"email": "hello@rgp.io"
+		}
+	],
+	"require":
+	{
+		"php": ">=5.4"
+	},
+	"autoload":
+	{
+		"files": 
+		[
+			"vdf.php"
+		]
+	}
+}
