@@ -16,9 +16,23 @@ Install via pypi: `pip install vdf`
 
 ### Javascript
 
+Using `vdf.js`
+
 ```javascript
 data = VDF.parse(vdf_text);
-vdf_text = VDF.stringify(data)
+vdf_text = VDF.stringify(data);
+```
+
+Or the version on `npm` (https://www.npmjs.com/package/simple-vdf)
+
+```bash
+npm install simple-vdf
+```
+
+```javascript
+vdf = require('simple-vdf');
+data = vdf.parse(vdf_text);
+vdf_text = vdf.stringify(data);
 ```
 
 ### PHP
