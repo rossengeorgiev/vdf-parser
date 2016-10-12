@@ -64,7 +64,10 @@ var VDF = {
                 var val = (m[6] !== undefined) ? m[6] : m[8];
 
                 if(val === undefined) {
-                    stack[stack.length-1][key] = {};
+                    // chain (merge) duplicate key
+                    if(stack[stack.length-1][key] === undefined)
+                        stack[stack.length-1][key] = {};
+
                     stack.push(stack[stack.length-1][key]);
                     expect_bracket = true;
                 }
