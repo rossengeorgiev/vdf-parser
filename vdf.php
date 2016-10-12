@@ -2,7 +2,7 @@
 // a simple parser for Valve's KeyValue format
 // https://developer.valvesoftware.com/wiki/KeyValues
 //
-// author: Rossen Popov, 2015
+// author: Rossen Popov, 2015-2016
 
 function vdf_decode($text) {
     if(!is_string($text)) {
@@ -73,7 +73,10 @@ function vdf_decode($text) {
                      : (isset($m['val']) ? $m['val'] : False);
 
             if($val === False) {
-                $stack[count($stack)-1][$key] = array();
+                // chain (merge*) duplicate key
+                if(!isset($stack[count($stack)-1][$key])) {
+                    $stack[count($stack)-1][$key] = array();
+                }
                 $stack[count($stack)] = &$stack[count($stack)-1][$key];
                 $expect_bracket = true;
             }
