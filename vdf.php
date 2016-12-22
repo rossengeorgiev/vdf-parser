@@ -118,25 +118,18 @@ function vdf_encode_step($arr, $pretty, $level) {
         return NULL;
     }
 
-    $indent = "\t";
     $buf = "";
-    $line_indent = "";
-
-    if($pretty) {
-        for($i = 0; $i < $level; $i++ ) {
-            $line_indent .= $indent;
-        }
-    }
+    $line_indent = ($pretty) ? str_repeat("\t", $level) : "";
 
     foreach($arr as $k => $v) {
         if(is_string($v)) {
-            $buf .= sprintf("%s\"%s\" \"%s\"\n", $line_indent, $k, $v);
+            $buf .= "$line_indent\"$k\" \"$v\"\n";
         }
         else {
             $res = vdf_encode_step($v, $pretty, $level + 1);
             if($res === NULL) return NULL;
 
-            $buf .= sprintf("%1\$s\"%2\$s\"\n%1\$s{\n%3\$s%1\$s}\n", $line_indent, $k, $res);
+            $buf .= "$line_indent\"$k\"\n$line_indent{\n$res$line_indent}\n";
         }
     }
 
