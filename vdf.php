@@ -130,13 +130,13 @@ function vdf_encode_step($arr, $pretty, $level) {
 
     foreach($arr as $k => $v) {
         if(is_string($v)) {
-            $buf .= sprintf('%s"%s" "%s"\n', $line_indent, $k, $v);
+            $buf .= sprintf("%s\"%s\" \"%s\"\n", $line_indent, $k, $v);
         }
         else {
             $res = vdf_encode_step($v, $pretty, $level + 1);
             if($res === NULL) return NULL;
 
-            $buf .= sprintf('%s"%s"\n{\n%s}\n', $line_indent, $k, $res);
+            $buf .= sprintf("%1\$s\"%2\$s\"\n%1\$s{\n%3\$s%1\$s}\n", $line_indent, $k, $res);
         }
     }
 
