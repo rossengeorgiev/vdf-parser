@@ -6,7 +6,7 @@
 
 function vdf_decode($text) {
     if(!is_string($text)) {
-        trigger_error("vdf_encode expects parameter 1 to be a string, " . gettype($arr) . " given.", E_USER_NOTICE);
+        trigger_error("vdf_decode expects parameter 1 to be a string, " . gettype($arr) . " given.", E_USER_NOTICE);
         return NULL;
     }
 
