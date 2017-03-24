@@ -120,7 +120,7 @@ var VDF = {
                 buf += [line_indent, '"', key, '"\n', line_indent, '{\n', this._dump(obj[key],pretty,level+1), line_indent, "}\n"].join('');
             }
             else {
-                buf += [line_indent, '"', key, '" "', String(obj[key]), '"\n'].join('');
+                buf += [line_indent, '"', key, '"', indent, indent, '"', String(obj[key]), '"\n'].join('');
             }
         }
 

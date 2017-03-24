@@ -2,6 +2,7 @@
 // https://developer.valvesoftware.com/wiki/KeyValues
 //
 // author: Rossen Popov, 2014-2016
+// contributor: Tom Shaver, 2017
 
 function parse(text) {
     if(typeof text != "string") {

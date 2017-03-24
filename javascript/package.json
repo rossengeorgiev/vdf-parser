@@ -1,8 +1,11 @@
 {
   "author": "Rossen Georgiev <hello@rgp.io>",
+  "contributors": [{
+     "Tom Shaver <l3l_aze@yahoo.com> (https://github.com/l3laze)"
+  }],
   "name": "simple-vdf",
   "description": "Package for (de)serialization of Valve's KeyValue format (VDF)",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "MIT",
   "homepage": "https://github.com/rossengeorgiev/vdf-parser",
   "readmeFilename": "README.md",
