@@ -1,3 +1,7 @@
+##
+
+Just a small fix to VDF output from what https://www.npmjs.com/package/simple-vdf does. It should use /t/t between "key" and "value", but is using space(s). 
+
 
 ## simple-vdf
 

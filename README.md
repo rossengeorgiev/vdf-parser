@@ -1,3 +1,8 @@
+#### Note
+
+This is based on https://github.com/rossengeorgiev/vdf-parser.
+Just uploaded this package so that I can use it as a dependency in my app https://github.com/l3laze/ReliefValve.
+
 ## KeyValue encoder/decoder for various languages
 
 Format: https://developer.valvesoftware.com/wiki/KeyValues
