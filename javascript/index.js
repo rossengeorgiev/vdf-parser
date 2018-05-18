@@ -64,8 +64,10 @@ function parse(text) {
 
             if(val === undefined) {
                 // chain (merge) duplicate key
-                if(stack[stack.length-1][key] === undefined)
+                if(stack[stack.length-1][key] === undefined || typeof stack[stack.length-1][key] !== 'object') {
                     stack[stack.length-1][key] = {};
+                }
+
 
                 stack.push(stack[stack.length-1][key]);
                 expect_bracket = true;
