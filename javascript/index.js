@@ -117,11 +117,13 @@ function _dump(obj,pretty,level) {
     }
 
     for(key in obj) {
-        if( typeof obj[key] == "object" ) {
-            buf += [line_indent, '"', key, '"\n', line_indent, '{\n', _dump(obj[key],pretty,level+1), line_indent, "}\n"].join('');
-        }
-        else {
-            buf += [line_indent, '"', key, '" "', String(obj[key]), '"\n'].join('');
+        if (obj.hasOwnProperty(key)){
+            if( typeof obj[key] == "object" ) {
+                buf += [line_indent, '"', key, '"\n', line_indent, '{\n', _dump(obj[key],pretty,level+1), line_indent, "}\n"].join('');
+            }
+            else {
+                buf += [line_indent, '"', key, '" "', String(obj[key]), '"\n'].join('');
+            }
         }
     }
 
