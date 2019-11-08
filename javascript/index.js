@@ -74,6 +74,9 @@ function parse(text) {
             }
             else {
                 if(m[7] === undefined && m[8] === undefined) {
+                    if (i + 1 >= j) {
+                        throw new SyntaxError("VDF.parse: un-closed quotes at end of file");
+                    }
                     line += "\n" + lines[++i];
                     continue;
                 }
